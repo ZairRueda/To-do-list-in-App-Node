@@ -6,8 +6,14 @@ require('colors')
 const { mostrarMenu, pausa } = require('./helpers/mensajes')
 console.clear()
 const main = async() => {
-    mostrarMenu()
+    apt = ''
+    do {
+        // Como la funcion ahora regresa una promesa podemos usar el await
+        opt = await mostrarMenu()
+        console.log({opt});
+        await pausa()
+    } while (opt !== '0');
 
-    pausa()
+    // pausa()
 }
 main()

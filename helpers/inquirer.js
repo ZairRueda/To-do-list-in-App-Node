@@ -63,6 +63,7 @@ const pause = async() => {
         }
     ]
 
+    console.log('\n')
     // Integramos la llamada a pantalla, esperamos que interactue
     await inquirer.prompt(question)
 
@@ -76,8 +77,49 @@ const pause = async() => {
     console.log('Answer:', answer);
     */
 }
+ 
+/*
+// Problema:
+
+Al usuario querer agregar una tarea nosotros podemos preguntarle 
+cual es el valor de la tarea, que quiere agregar 
+Tambien que el usuario pueda escribir algo
+
+Nosotros vamos a ocupar el mismo promp en varios lugares, ejemplo
+al querer el usuario borrar una tarea o buscarla 
+
+// Solucion:
+
+Lo solucionaremos creando una funcion global
+*/
+const leerInput = async(message) => {
+
+    const questions = [
+        {
+            type: 'input',
+            name: 'desc',
+            message,
+            validate(value) {
+                if (value.length === 0) {
+                    return 'Por favor ingrese un valor'
+                }
+                return true
+            }
+        }
+        /* 
+        validate: como su nombre nos dice nos ayuda a validar lo que el usuario 
+        decea buscar, en este caso queremos validar que alla algo en el mensaje recivido
+        */
+    ]
+
+    // Destructuramos por que questions retorna un objeto
+    const {desc} = await inquirer.prompt(questions)
+
+    return desc 
+}
 
 module.exports = {
     inquirerMenu,
-    pause
+    pause,
+    leerInput
 }

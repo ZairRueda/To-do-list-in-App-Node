@@ -1,41 +1,39 @@
 const inquirer = require('inquirer')
-const confirm = require('@inquirer/confirm')
-
 require('colors')
 
 const preguntas = [
     {
         type: 'list',
         name: 'opcion',
-        message: '¿Qué decea hacer?',
+        message: `${'¿Qué decea hacer?'.blue.bold}`,
         choices: [
             {
                 value: '1', // este es el valor al que apunta el codigo pueden ser numeros o strings
-                name: '1. Crear Tarea'
+                name: `${'1.'.blue} Crear Tarea`
             },
             {
                 value: '2',
-                name: '2. Lista Tareas'
+                name: `${'2.'.blue} Lista Tareas`
             },
             {
                 value: '3',
-                name: '3. Lista Tareas Completadas'
+                name: `${'3.'.blue} Lista Tareas Completadas`
             },
             {
                 value: '4',
-                name: '4. Listar Tareas Pendientes'
+                name: `${'4.'.blue} Listar Tareas Pendientes`
             },
             {
                 value: '5',
-                name: '5. Completar Tarea(s)'
+                name: `${'5.'.blue} Completar Tarea(s)`
             },
             {
                 value: '6',
-                name: '6. Eliminar Tarea'
+                name: `${'6.'.blue} Eliminar Tarea`
             },
             {
                 value: '0',
-                name: '0. Salir'
+                name: `${'0.'.red} Salir`
             }
         ]
     }
@@ -44,9 +42,9 @@ const preguntas = [
 const inquirerMenu = async() => {
 
     // console.clear()
-    console.log('=========================='.green)
-    console.log('  Seleccione una opción   ')
-    console.log('==========================\n'.green)
+    console.log('=============================='.blue)
+    console.log('||'.blue + '  Seleccione una opción   '.bold + '||'.blue)
+    console.log('==============================\n'.blue)
 
     const {opcion} = await inquirer.prompt(preguntas)
 
@@ -118,8 +116,85 @@ const leerInput = async(message) => {
     return desc 
 }
 
+const listadoTareaBorrar = async(tareas = []) => {
+
+    const choices = tareas.map((tarea, i) => {
+        const idx = `${i + 1}`.green
+        return {
+            value: tarea.id,
+            name: `${idx} ${tarea.desc}`
+        }
+    })
+
+    // Para agregar a las choices más opciones
+    choices.unshift({
+        value: '0',
+        name: `${'0.'.red} Cancelar`
+    })
+
+    const questions = [
+        {
+            type: 'list',
+            name: 'id',
+            message: 'Borrar',
+            choices
+        }
+    ] 
+
+    const {id} = await inquirer.prompt(questions)
+
+    return id
+
+}
+
+const confirmar = async(message) => {
+    const question = [
+        {
+            type: 'confirm',
+            name: 'ok',
+            message
+        }
+    ]
+
+    // El type confirm retorna como valor un boolean
+    const {ok} = await inquirer.prompt(question)
+
+    return ok
+} 
+
+// Marcar Tareas Completadas
+const mostrarListadoCheckList = async(tareas = []) => {
+
+    const choices = tareas.map((tarea, i) => {
+        const idx = `${i + 1}`.green
+        return {
+            value: tarea.id,
+            name: `${idx} ${tarea.desc}`,
+            checked: (tarea.completadoEn) ? true : false
+        }
+        // Recordatorio: mejorar el uso de ternarios
+    })
+
+    const questions = [
+        {
+            type: 'checkbox',
+            name: 'id',
+            message: 'Seleccione',
+            choices
+        }
+    ] 
+
+    const ids = await inquirer.prompt(questions)
+
+    return ids
+
+}
+
 module.exports = {
     inquirerMenu,
     pause,
-    leerInput
+    leerInput,
+    listadoTareaBorrar,
+    confirmar,
+    mostrarListadoCheckList
 }
